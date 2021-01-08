@@ -1,18 +1,11 @@
-# Blog: Docker for local development environment Example
+# Code For Hack n Roll 2021
 
-This repo contains the example code for the blog post:
+1. Start the Docker-Image
 
-**🐳 Simplified guide to using Docker for local development environment**
+```
+docker-compose up
+```
 
-_The blog link :_
+2. Use Postman/whatever you are using to hit the server at port 9000
 
-[https://blog.atulr.com/docker-local-environment/](https://blog.atulr.com/docker-local-environment/)
-
-To run the example:
-
-- `git clone https://github.com/master-atul/blog-docker-dev-environment-example`
-- `docker-compose up`
-
-Details about each service and how to run them is present in the induvidual services directories.
-
-Hope this helps someone 🎉🌮
+3. Enjoy!
