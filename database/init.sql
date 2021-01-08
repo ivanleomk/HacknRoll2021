@@ -16,7 +16,7 @@ CREATE Table "restaurants" (
 );
 
 CREATE Table "restaurantTags" (
-  id SERIAL PRIMARY KEY,
+  id TEXT PRIMARY KEY,
   restaurant_id int,
   user_id text
 );

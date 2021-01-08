@@ -69,6 +69,49 @@ def alchemy_version():
     version = sqlalchemy.__version__
     return jsonify(hello="We are currently running {}".format(version))
 
+@app.route("/tags/get_interested_users/<restaurantId>")
+def get_interested_users(restaurantId):
+    """
+    Get all Users who have indicated interest in this restaurant
+    """
+    statement = text(
+            """
+            SELECT * FROM public."restaurantTags" WHERE restaurant_id = :restaurantId
+            """
+        )
+    data = {
+        "restaurantId":restaurantId
+    }
+    with engine.connect() as con:
+        res = con.execute(statement,**data)
+    
+    users = []
+    for rowproxy in res:
+        users.append(rowproxy[2])
+        
+    return jsonify(users)
+
+@app.route("/tags/add_interested_user/<userId>/<restaurantId>")
+def add_interested_user(userId,restaurantId):
+    try:
+        new_key = "{}-{}".format(userId,restaurantId)
+        statement = text(
+                """
+                INSERT INTO public."restaurantTags" ("id","restaurant_id","user_id")
+                VALUES (:new_key,:restaurant_id,:user_id);
+                """
+            )
+        data = {
+            "restaurant_id":restaurantId,
+            "user_id":userId,
+            "new_key":new_key
+        }
+        with engine.connect() as con:
+            con.execute(statement,**data)
+        return jsonify({"Message":"Succesfully Inserted User into notification tags"})
+    except:
+        return jsonify({"Message":"Unable to insert user into table"})
+    
 
 
 @app.route("/restaurants/get_restaurants")
@@ -99,6 +142,7 @@ def add_order(restaurantId,orderCutOff,userId):
         with engine.connect() as con:
             for line in data:
                 con.execute(statement, **line)
+        
         
         
         session.commit()
