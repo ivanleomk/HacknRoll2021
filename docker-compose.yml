@@ -1,33 +1,23 @@
 version: "3"
 
 services:
-  njs1:
-    build: ./njs1
-    command: sh -c "npm install && npm start"
+  db:
+    build: ./database
     environment:
-      - NODE_ENV=development
-      - PORT=7000
+      POSTGRES_DB: ynchacks
+      POSTGRES_USER: ynchacks
+      POSTGRES_PASSWORD: password
+    expose:
+      - "5433" # Publishes 5433 to other containers but NOT to host machine
     ports:
-      - "7000:7000"
-    working_dir: /root/njs1
-    volumes:
-      - ./njs1:/root/njs1:cached # <--- This will map ./njs1 to /root/njs1 inside the container.
+      - "5433:5433"
+    # volumes:
+    #   - ./backups:/postgresql/
+    command: -p 5433
 
-  njs2:
-    image: node:12.3-alpine
-    command: sh -c "npm install && npm start"
-    environment:
-      - NODE_ENV=development
-      - PORT=8000
-    ports:
-      - "8000:8000"
-    working_dir: /root/njs2
-    volumes:
-      - ./njs2:/root/njs2:cached # <--- This will map ./njs2 to /root/njs2 inside the container.
-
-  py1:
+  flask:
     image: python:3-stretch
-    command: sh -c "pip install -r requirements.txt && python -m server"
+    command: sh -c "pip3 install SQLAlchemy psycopg2 pytz Flask Flask-SQLAlchemy && python -m server "
     environment:
       - PORT=9000
       - FLASK_ENV=development
@@ -37,13 +27,3 @@ services:
     volumes:
       - ./py1:/root/py1:cached # <--- This will map ./py1 to /root/py1 inside the container.
 
-  go1:
-    image: golang:1.12-alpine
-    command: sh -c "go run ."
-    environment:
-      - PORT=5000
-    ports:
-      - "5000:5000"
-    working_dir: /root/go1
-    volumes:
-      - ./go1:/root/go1:cached # <--- This will map ./go1 to /root/go1 inside the container.
